@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="app">
+        <section class="card">
+
+            <div class="header">
+                <div class="logo">AI</div>
+                <div>
+                    <h1>Employee AI Assistant</h1>
+                    <p>Enterprise Knowledge Intelligence</p>
+                </div>
+            </div>
+
+            <div class="intro">
+                <h2>How can I help you?</h2>
+                <p>
+                    Ask a question about company policies,
+                    procedures, IT security, benefits, or other
+                    enterprise information.
+                </p>
+            </div>
+
+            <div class="question-area">
+                <label for="question">Your question</label>
+
+                <textarea
+                    id="question"
+                    placeholder="Example: How many paid vacation days do employees receive each year?"
+                    rows="5"
+                ></textarea>
+
+                <button id="askButton">ASK AI</button>
+            </div>
+
+            <div id="loading" class="loading hidden">
+                AI is searching the enterprise knowledge base...
+            </div>
+
+            <div id="result" class="result hidden">
+
+                <h2>AI Answer</h2>
+
+                <div id="answer" class="answer"></div>
+
+                <div class="source">
+                    <h3>Source</h3>
+                    <p id="sourceDocument"></p>
+                    <p id="sourceChunk"></p>
+                    <p id="sourceSimilarity"></p>
+                </div>
+
+            </div>
+
+            <div id="error" class="error hidden"></div>
+
+            <footer>
+                Enterprise Knowledge Intelligence
+            </footer>
+
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
