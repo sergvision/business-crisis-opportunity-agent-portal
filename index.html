@@ -3,71 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee AI Assistant</title>
+
+    <title>Business Crisis & Opportunity Intelligence Agent</title>
+
+    <meta
+        name="description"
+        content="Live demonstration of a Business Crisis & Opportunity Intelligence Agent."
+    >
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <main class="app">
-        <section class="card">
+<main class="app">
 
-            <div class="header">
-                <div class="logo">AI</div>
-                <div>
-                    <h1>Employee AI Assistant</h1>
-                    <p>Enterprise Knowledge Intelligence</p>
-                </div>
-            </div>
+    <section class="card">
 
-            <div class="intro">
-                <h2>How can I help you?</h2>
-                <p>
-                    Ask a question about company policies,
-                    procedures, IT security, benefits, or other
-                    enterprise information.
+        <!-- HEADER -->
+        <header class="header">
+
+            <div class="logo">AI</div>
+
+            <div>
+                <h1>Business Crisis & Opportunity Intelligence Agent</h1>
+                <p class="subtitle">
+                    Agentic AI Engineering • Case 06
                 </p>
             </div>
 
-            <div class="question-area">
-                <label for="question">Your question</label>
+        </header>
 
-                <textarea
-                    id="question"
-                    placeholder="Example: How many paid vacation days do employees receive each year?"
-                    rows="5"
-                ></textarea>
 
-                <button id="askButton">ASK AI</button>
-            </div>
+        <!-- INTRODUCTION -->
+        <section class="intro">
 
-            <div id="loading" class="loading hidden">
-                AI is searching the enterprise knowledge base...
-            </div>
+            <h2>AI-Assisted Business Investigation</h2>
 
-            <div id="result" class="result hidden">
+            <p>
+                This agent investigates business performance deterioration,
+                analyzes operational and financial evidence, evaluates strategic
+                scenarios, and supports management decision-making.
+            </p>
 
-                <h2>AI Answer</h2>
+            <p class="methodology">
+                Diagnose → Investigate → Analyze → Evaluate → Discover → Recommend
+            </p>
 
-                <div id="answer" class="answer"></div>
+        </section>
 
-                <div class="source">
-                    <h3>Source</h3>
-                    <p id="sourceDocument"></p>
-                    <p id="sourceChunk"></p>
-                    <p id="sourceSimilarity"></p>
+
+        <!-- BUSINESS CONTEXT -->
+        <section class="panel">
+
+            <h2>Business Context</h2>
+
+            <div class="context-grid">
+
+                <div>
+                    <span>Company</span>
+                    <strong>Dubai Horizon Hospitality Group</strong>
+                </div>
+
+                <div>
+                    <span>Industry</span>
+                    <strong>Hospitality</strong>
+                </div>
+
+                <div>
+                    <span>Market</span>
+                    <strong>Dubai, UAE</strong>
+                </div>
+
+                <div>
+                    <span>Portfolio</span>
+                    <strong>3 Hotels • 420 Rooms</strong>
+                </div>
+
+                <div>
+                    <span>Segments</span>
+                    <strong>Leisure & Business</strong>
+                </div>
+
+                <div>
+                    <span>Channels</span>
+                    <strong>Direct + OTA</strong>
                 </div>
 
             </div>
 
-            <div id="error" class="error hidden"></div>
+        </section>
 
-            <footer>
-                Enterprise Knowledge Intelligence
-            </footer>
+
+        <!-- ASK AGENT -->
+        <section class="panel">
+
+            <h2>Ask the Agent</h2>
+
+            <p class="helper">
+                Ask a business question and let the agent investigate the case.
+            </p>
+
+            <label for="question">Business question</label>
+
+            <textarea
+                id="question"
+                rows="5"
+                placeholder="Example: Why has hotel performance deteriorated and what strategic action should management consider?"
+            ></textarea>
+
+            <button id="askButton" class="primary-button">
+                ASK THE AGENT
+            </button>
 
         </section>
-    </main>
 
-    <script src="script.js"></script>
+
+        <!-- LOADING -->
+        <section id="loading" class="panel status-panel hidden">
+
+            <div class="loader"></div>
+
+            <div>
+                <strong>Agent investigation in progress...</strong>
+                <p>
+                    The agent is analyzing the business context, tools,
+                    evidence and strategic scenarios.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- AGENT INVESTIGATION -->
+        <section id="investigationPanel" class="panel hidden">
+
+            <h2>Agent Investigation</h2>
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <span>Iteration</span>
+                    <strong id="iteration">-</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Tool Calls</span>
+                    <strong id="toolCalls">-</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Observations</span>
+                    <strong id="observations">-</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Decision Loop</span>
+                    <strong id="decisionLoop">-</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- BUSINESS ANALYSIS -->
+        <section id="analysisPanel" class="panel hidden">
+
+            <h2>Business Analysis</h2>
+
+            <div id="analysisContent" class="result-content"></div>
+
+        </section>
+
+
+        <!-- STRATEGIC SCENARIOS -->
+        <section id="scenarioPanel" class="panel hidden">
+
+            <h2>Strategic Scenarios</h2>
+
+            <div class="scenario-grid">
+
+                <div class="scenario">
+                    <h3>Scenario 1</h3>
+                    <p id="scenarioOne">
+                        Awaiting agent analysis...
+                    </p>
+                </div>
+
+                <div class="scenario">
+                    <h3>Scenario 2</h3>
+                    <p id="scenarioTwo">
+                        Awaiting agent analysis...
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECOMMENDATION -->
+        <section id="recommendationPanel" class="panel hidden">
+
+            <h2>Agent Recommendation</h2>
+
+            <div id="recommendationContent" class="recommendation">
+                Awaiting recommendation...
+            </div>
+
+        </section>
+
+
+        <!-- HUMAN DECISION -->
+        <section id="decisionPanel" class="panel hidden">
+
+            <h2>Human Decision</h2>
+
+            <p>
+                The final strategic decision remains under human management
+                control.
+            </p>
+
+            <div class="decision-buttons">
+
+                <button id="approveButton" class="decision-button">
+                    APPROVE
+                </button>
+
+                <button id="rejectButton" class="decision-button">
+                    REJECT
+                </button>
+
+                <button id="analysisButton" class="decision-button">
+                    REQUEST FURTHER ANALYSIS
+                </button>
+
+            </div>
+
+            <div id="decisionResult" class="decision-result hidden"></div>
+
+        </section>
+
+
+        <!-- DEMO LINKS -->
+        <section class="links-panel">
+
+            <a
+                href="https://github.com/sergvision/business-crisis-opportunity-agent-portal"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="secondary-button"
+            >
+                GITHUB
+            </a>
+
+            <a
+                href="https://colab.research.google.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="secondary-button"
+            >
+                COLAB
+            </a>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer>
+
+            <p>
+                Business Crisis & Opportunity Intelligence Agent
+            </p>
+
+            <p>
+                Case 06 • Agentic AI Engineering Portfolio
+            </p>
+
+            <p class="disclaimer">
+                Demonstration environment using controlled portfolio-scale
+                business data. No live enterprise systems or autonomous
+                external execution are used.
+            </p>
+
+        </footer>
+
+    </section>
+
+</main>
+
+
+<script src="script.js"></script>
+
 </body>
 </html>
