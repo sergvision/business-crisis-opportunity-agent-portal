@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,31 +15,44 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
+
 <body>
 
 <main class="app">
 
     <section class="card">
 
+
         <!-- HEADER -->
+
         <header class="header">
 
-            <div class="logo">AI</div>
+            <div class="logo">
+                AI
+            </div>
 
             <div>
-                <h1>Business Crisis & Opportunity Intelligence Agent</h1>
+
+                <h1>
+                    Business Crisis & Opportunity Intelligence Agent
+                </h1>
+
                 <p class="subtitle">
                     Agentic AI Engineering • Case 06
                 </p>
+
             </div>
 
         </header>
 
 
         <!-- INTRODUCTION -->
+
         <section class="intro">
 
-            <h2>AI-Assisted Business Investigation</h2>
+            <h2>
+                AI-Assisted Business Investigation
+            </h2>
 
             <p>
                 This agent investigates business performance deterioration,
@@ -54,40 +68,55 @@
 
 
         <!-- BUSINESS CONTEXT -->
+
         <section class="panel">
 
-            <h2>Business Context</h2>
+            <h2>
+                Business Context
+            </h2>
 
             <div class="context-grid">
 
                 <div>
                     <span>Company</span>
-                    <strong>Dubai Horizon Hospitality Group</strong>
+                    <strong>
+                        Dubai Horizon Hospitality Group
+                    </strong>
                 </div>
 
                 <div>
                     <span>Industry</span>
-                    <strong>Hospitality</strong>
+                    <strong>
+                        Hospitality
+                    </strong>
                 </div>
 
                 <div>
                     <span>Market</span>
-                    <strong>Dubai, UAE</strong>
+                    <strong>
+                        Dubai, UAE
+                    </strong>
                 </div>
 
                 <div>
                     <span>Portfolio</span>
-                    <strong>3 Hotels • 420 Rooms</strong>
+                    <strong>
+                        3 Hotels • 420 Rooms
+                    </strong>
                 </div>
 
                 <div>
                     <span>Segments</span>
-                    <strong>Leisure & Business</strong>
+                    <strong>
+                        Leisure & Business
+                    </strong>
                 </div>
 
                 <div>
                     <span>Channels</span>
-                    <strong>Direct + OTA</strong>
+                    <strong>
+                        Direct + OTA
+                    </strong>
                 </div>
 
             </div>
@@ -96,15 +125,20 @@
 
 
         <!-- ASK AGENT -->
+
         <section class="panel">
 
-            <h2>Ask the Agent</h2>
+            <h2>
+                Ask the Agent
+            </h2>
 
             <p class="helper">
                 Ask a business question and let the agent investigate the case.
             </p>
 
-            <label for="question">Business question</label>
+            <label for="question">
+                Business question
+            </label>
 
             <textarea
                 id="question"
@@ -112,141 +146,203 @@
                 placeholder="Example: Why has hotel performance deteriorated and what strategic action should management consider?"
             ></textarea>
 
-            <button id="askButton" class="primary-button">
+            <button
+                id="askButton"
+                class="primary-button"
+            >
                 ASK THE AGENT
             </button>
 
         </section>
 
 
-        <!-- LOADING -->
-        <section id="loading" class="panel status-panel hidden">
+        <!-- ERROR -->
 
-            <div class="loader"></div>
+        <section
+            id="error"
+            class="panel error-panel hidden"
+        ></section>
 
-            <div>
-                <strong>Agent investigation in progress...</strong>
+
+        <!-- AGENT RESULT -->
+
+        <section
+            id="result"
+            class="hidden"
+        >
+
+
+            <!-- AGENT INVESTIGATION -->
+
+            <section class="panel">
+
+                <h2>
+                    Agent Investigation
+                </h2>
+
+                <div class="metrics">
+
+                    <div class="metric">
+
+                        <span>
+                            Iteration
+                        </span>
+
+                        <strong id="iteration">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="metric">
+
+                        <span>
+                            Tool Calls
+                        </span>
+
+                        <strong id="toolCalls">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="metric">
+
+                        <span>
+                            Observations
+                        </span>
+
+                        <strong id="observations">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="metric">
+
+                        <span>
+                            Decision Loop
+                        </span>
+
+                        <strong id="decisionLoop">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- BUSINESS ANALYSIS -->
+
+            <section class="panel">
+
+                <h2>
+                    Business Analysis
+                </h2>
+
+                <div
+                    id="businessAnalysis"
+                    class="result-content"
+                ></div>
+
+            </section>
+
+
+            <!-- STRATEGIC SCENARIOS -->
+
+            <section class="panel">
+
+                <h2>
+                    Strategic Scenarios
+                </h2>
+
+                <div
+                    id="scenarios"
+                    class="scenario-grid"
+                ></div>
+
+            </section>
+
+
+            <!-- FULL ANSWER -->
+
+            <section class="panel">
+
+                <h2>
+                    Agent Recommendation
+                </h2>
+
+                <div
+                    id="recommendation"
+                    class="recommendation"
+                ></div>
+
+            </section>
+
+
+            <!-- HUMAN DECISION -->
+
+            <section
+                id="decisionPanel"
+                class="panel hidden"
+            >
+
+                <h2>
+                    Human Decision
+                </h2>
+
                 <p>
-                    The agent is analyzing the business context, tools,
-                    evidence and strategic scenarios.
+                    The final strategic decision remains under human management
+                    control.
                 </p>
-            </div>
 
-        </section>
+                <div class="decision-buttons">
+
+                    <button
+                        id="approveButton"
+                        class="decision-button"
+                    >
+                        APPROVE
+                    </button>
 
 
-        <!-- AGENT INVESTIGATION -->
-        <section id="investigationPanel" class="panel hidden">
+                    <button
+                        id="rejectButton"
+                        class="decision-button"
+                    >
+                        REJECT
+                    </button>
 
-            <h2>Agent Investigation</h2>
 
-            <div class="metrics">
+                    <button
+                        id="analysisButton"
+                        class="decision-button"
+                    >
+                        REQUEST FURTHER ANALYSIS
+                    </button>
 
-                <div class="metric">
-                    <span>Iteration</span>
-                    <strong id="iteration">-</strong>
                 </div>
 
-                <div class="metric">
-                    <span>Tool Calls</span>
-                    <strong id="toolCalls">-</strong>
-                </div>
 
-                <div class="metric">
-                    <span>Observations</span>
-                    <strong id="observations">-</strong>
-                </div>
+                <div
+                    id="decisionResult"
+                    class="decision-result hidden"
+                ></div>
 
-                <div class="metric">
-                    <span>Decision Loop</span>
-                    <strong id="decisionLoop">-</strong>
-                </div>
+            </section>
 
-            </div>
-
-        </section>
-
-
-        <!-- BUSINESS ANALYSIS -->
-        <section id="analysisPanel" class="panel hidden">
-
-            <h2>Business Analysis</h2>
-
-            <div id="analysisContent" class="result-content"></div>
-
-        </section>
-
-
-        <!-- STRATEGIC SCENARIOS -->
-        <section id="scenarioPanel" class="panel hidden">
-
-            <h2>Strategic Scenarios</h2>
-
-            <div class="scenario-grid">
-
-                <div class="scenario">
-                    <h3>Scenario 1</h3>
-                    <p id="scenarioOne">
-                        Awaiting agent analysis...
-                    </p>
-                </div>
-
-                <div class="scenario">
-                    <h3>Scenario 2</h3>
-                    <p id="scenarioTwo">
-                        Awaiting agent analysis...
-                    </p>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- RECOMMENDATION -->
-        <section id="recommendationPanel" class="panel hidden">
-
-            <h2>Agent Recommendation</h2>
-
-            <div id="recommendationContent" class="recommendation">
-                Awaiting recommendation...
-            </div>
-
-        </section>
-
-
-        <!-- HUMAN DECISION -->
-        <section id="decisionPanel" class="panel hidden">
-
-            <h2>Human Decision</h2>
-
-            <p>
-                The final strategic decision remains under human management
-                control.
-            </p>
-
-            <div class="decision-buttons">
-
-                <button id="approveButton" class="decision-button">
-                    APPROVE
-                </button>
-
-                <button id="rejectButton" class="decision-button">
-                    REJECT
-                </button>
-
-                <button id="analysisButton" class="decision-button">
-                    REQUEST FURTHER ANALYSIS
-                </button>
-
-            </div>
-
-            <div id="decisionResult" class="decision-result hidden"></div>
 
         </section>
 
 
         <!-- DEMO LINKS -->
+
         <section class="links-panel">
 
             <a
@@ -257,6 +353,7 @@
             >
                 GITHUB
             </a>
+
 
             <a
                 href="https://colab.research.google.com/"
@@ -271,6 +368,7 @@
 
 
         <!-- FOOTER -->
+
         <footer>
 
             <p>
@@ -289,6 +387,7 @@
 
         </footer>
 
+
     </section>
 
 </main>
@@ -297,4 +396,5 @@
 <script src="script.js"></script>
 
 </body>
+
 </html>
