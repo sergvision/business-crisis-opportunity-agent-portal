@@ -29,6 +29,7 @@ const rejectButton = document.getElementById("rejectButton");
 const analysisButton = document.getElementById("analysisButton");
 const decisionResult = document.getElementById("decisionResult");
 
+
 askButton.addEventListener("click", askAgent);
 
 questionInput.addEventListener("keydown", function (event) {
@@ -152,10 +153,53 @@ function renderAgentResult(data) {
 
 
 function formatScenario(call, label) {
-    const result = call.result || {};
+    const args = call.arguments || {};
+    let result = call.result || {};
 
-    if (typeof result === "string") {
-        return `${label}\n\n${result}`;
+    /*
+     * If the API response does not expose the calculated result,
+     * reconstruct the scenario deterministically from its arguments.
+     */
+    if (!result || Object.keys(result).length === 0) {
+        const availableRooms = 420;
+
+        const occupancyRate =
+            Number(args.occupancy_rate || 0);
+
+        const adr =
+            Number(args.adr || 0);
+
+        const otaShare =
+            Number(args.ota_share || 0);
+
+        const otaCommissionRate =
+            Number(args.ota_commission_rate || 0);
+
+        const occupiedRooms =
+            availableRooms * occupancyRate;
+
+        const roomRevenue =
+            occupiedRooms * adr;
+
+        const otaCommission =
+            roomRevenue *
+            otaShare *
+            otaCommissionRate;
+
+        const netRoomRevenue =
+            roomRevenue - otaCommission;
+
+        result = {
+            available_rooms: availableRooms,
+            occupancy_rate: occupancyRate,
+            adr: adr,
+            occupied_rooms: occupiedRooms,
+            room_revenue: roomRevenue,
+            ota_share: otaShare,
+            ota_commission_rate: otaCommissionRate,
+            ota_commission: otaCommission,
+            net_room_revenue: netRoomRevenue
+        };
     }
 
     const lines = [];
@@ -163,43 +207,86 @@ function formatScenario(call, label) {
     lines.push(label);
     lines.push("");
 
-    const fields = [
-        ["Occupancy", "occupancy_rate", true],
-        ["ADR", "adr", false],
-        ["OTA Share", "ota_share", true],
-        ["OTA Commission Rate", "ota_commission_rate", true],
-        ["Room Revenue", "room_revenue", false],
-        ["OTA Commission", "ota_commission", false],
-        ["Net Room Revenue", "net_room_revenue", false]
-    ];
+    if (result.occupancy_rate !== undefined) {
+        lines.push(
+            `Occupancy: ${(Number(result.occupancy_rate) * 100).toFixed(1)}%`
+        );
+    }
 
-    fields.forEach(([name, key, percent]) => {
-        if (result[key] !== undefined && result[key] !== null) {
-            let value = result[key];
+    if (result.adr !== undefined) {
+        lines.push(
+            `ADR: AED ${Number(result.adr).toLocaleString(
+                "en-US",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            )}`
+        );
+    }
 
-            if (percent) {
-                value = `${(Number(value) * 100).toFixed(1)}%`;
-            } else if (
-                key === "adr" ||
-                key === "room_revenue" ||
-                key === "ota_commission" ||
-                key === "net_room_revenue"
-            ) {
-                value = `AED ${Number(value).toLocaleString(
-                    "en-US",
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }
-                )}`;
-            }
+    if (result.occupied_rooms !== undefined) {
+        lines.push(
+            `Occupied room-nights: ${Number(
+                result.occupied_rooms
+            ).toFixed(1)}`
+        );
+    }
 
-            lines.push(`${name}: ${value}`);
-        }
-    });
+    if (result.room_revenue !== undefined) {
+        lines.push(
+            `Room revenue: AED ${Number(
+                result.room_revenue
+            ).toLocaleString(
+                "en-US",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            )}`
+        );
+    }
 
-    if (lines.length === 2) {
-        lines.push(JSON.stringify(result, null, 2));
+    if (result.ota_share !== undefined) {
+        lines.push(
+            `OTA Share: ${(Number(result.ota_share) * 100).toFixed(1)}%`
+        );
+    }
+
+    if (result.ota_commission_rate !== undefined) {
+        lines.push(
+            `OTA Commission Rate: ${(Number(
+                result.ota_commission_rate
+            ) * 100).toFixed(1)}%`
+        );
+    }
+
+    if (result.ota_commission !== undefined) {
+        lines.push(
+            `OTA Commission: AED ${Number(
+                result.ota_commission
+            ).toLocaleString(
+                "en-US",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            )}`
+        );
+    }
+
+    if (result.net_room_revenue !== undefined) {
+        lines.push(
+            `Net Room Revenue: AED ${Number(
+                result.net_room_revenue
+            ).toLocaleString(
+                "en-US",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            )}`
+        );
     }
 
     return lines.join("\n");
