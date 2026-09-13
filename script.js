@@ -4,24 +4,17 @@ const API_URL =
 const questionInput = document.getElementById("question");
 const askButton = document.getElementById("askButton");
 
-const loading = document.getElementById("loading");
+const result = document.getElementById("result");
+const answer = document.getElementById("answer");
 
-const investigationPanel = document.getElementById("investigationPanel");
 const iteration = document.getElementById("iteration");
 const toolCalls = document.getElementById("toolCalls");
 const observations = document.getElementById("observations");
 const decisionLoop = document.getElementById("decisionLoop");
 
-const analysisPanel = document.getElementById("analysisPanel");
-const analysisContent = document.getElementById("analysisContent");
-
-const scenarioPanel = document.getElementById("scenarioPanel");
-const scenarioOne = document.getElementById("scenarioOne");
-const scenarioTwo = document.getElementById("scenarioTwo");
-
-const recommendationPanel = document.getElementById("recommendationPanel");
-const recommendationContent =
-    document.getElementById("recommendationContent");
+const businessAnalysis = document.getElementById("businessAnalysis");
+const scenarios = document.getElementById("scenarios");
+const recommendation = document.getElementById("recommendation");
 
 const decisionPanel = document.getElementById("decisionPanel");
 const approveButton = document.getElementById("approveButton");
@@ -29,6 +22,7 @@ const rejectButton = document.getElementById("rejectButton");
 const analysisButton = document.getElementById("analysisButton");
 const decisionResult = document.getElementById("decisionResult");
 
+const errorBox = document.getElementById("error");
 
 askButton.addEventListener("click", askAgent);
 
@@ -44,18 +38,15 @@ async function askAgent() {
     const question = questionInput.value.trim();
 
     if (!question) {
-        alert("Please enter your business question.");
+        showError("Please enter your question.");
         return;
     }
 
+    hideError();
     resetPanels();
 
     askButton.disabled = true;
-    askButton.textContent = "THINKING...";
-
-    if (loading) {
-        loading.classList.remove("hidden");
-    }
+    askButton.textContent = "Thinking...";
 
     try {
         const response = await fetch(API_URL, {
@@ -74,7 +65,7 @@ async function askAgent() {
             throw new Error(
                 data.detail ||
                 data.message ||
-                "The Business Intelligence Agent could not process the request."
+                "The AI assistant could not process your request."
             );
         }
 
@@ -83,84 +74,108 @@ async function askAgent() {
     } catch (error) {
         console.error("Agent error:", error);
 
-        alert(
-            "Unable to connect to the Business Crisis & Opportunity Intelligence API.\n\n" +
-            error.message
+        showError(
+            "Unable to connect to the Business Crisis & Opportunity " +
+            "Intelligence API. Please try again."
         );
 
     } finally {
         askButton.disabled = false;
-        askButton.textContent = "ASK THE AGENT";
-
-        if (loading) {
-            loading.classList.add("hidden");
-        }
+        askButton.textContent = "ASK AI";
     }
 }
 
 
 function renderAgentResult(data) {
+
+    answer.textContent =
+        data.answer || "No answer was returned.";
+
+    iteration.textContent =
+        data.iteration !== undefined
+            ? data.iteration
+            : "-";
+
     const calls = Array.isArray(data.toolCalls)
         ? data.toolCalls
         : [];
 
-    const observationList = Array.isArray(data.observations)
-        ? data.observations
-        : [];
-
-    iteration.textContent = data.iteration ?? "-";
     toolCalls.textContent = calls.length;
-    observations.textContent = observationList.length;
-    decisionLoop.textContent = data.decisionLoop ?? calls.length;
 
-    investigationPanel.classList.remove("hidden");
+    observations.textContent =
+        Array.isArray(data.observations)
+            ? data.observations.length
+            : 0;
 
-    const answer = data.answer || "No analysis was returned.";
+    decisionLoop.textContent =
+        data.decisionLoop !== undefined
+            ? data.decisionLoop
+            : calls.length;
 
-    analysisContent.textContent = answer;
-    analysisPanel.classList.remove("hidden");
+    businessAnalysis.textContent =
+        data.answer || "No business analysis was returned.";
 
-    const scenarios = calls.filter(
-        call => call && call.tool === "calculate_scenario"
-    );
+    renderScenarios(calls);
 
-    if (scenarios.length > 0) {
-        scenarioOne.textContent = formatScenario(
-            scenarios[0],
-            "Scenario 1"
-        );
+    recommendation.textContent =
+        data.answer || "No recommendation was returned.";
 
-        if (scenarios.length > 1) {
-            scenarioTwo.textContent = formatScenario(
-                scenarios[1],
-                "Scenario 2"
-            );
-        } else {
-            scenarioTwo.textContent = "No second scenario returned.";
-        }
+    result.classList.remove("hidden");
+    decisionPanel.classList.remove("hidden");
+}
 
-        scenarioPanel.classList.remove("hidden");
+
+function renderScenarios(calls) {
+
+    scenarios.innerHTML = "";
+
+    const scenarioCalls = calls.filter(function (call) {
+        return call &&
+            call.tool === "calculate_scenario";
+    });
+
+    if (scenarioCalls.length === 0) {
+        scenarios.textContent =
+            "No strategic scenario calculations were returned.";
+        return;
     }
 
-    recommendationContent.textContent = answer;
-    recommendationPanel.classList.remove("hidden");
+    const firstScenario = scenarioCalls[0];
+    const secondScenario = scenarioCalls[1];
 
-    decisionPanel.classList.remove("hidden");
+    const scenarioOne = formatScenario(
+        firstScenario,
+        "Scenario 1"
+    );
 
-    decisionResult.textContent =
-        "Human decision required: APPROVE, REJECT, or REQUEST FURTHER ANALYSIS.";
+    scenarios.appendChild(scenarioOne);
+
+    if (secondScenario) {
+        const scenarioTwo = formatScenario(
+            secondScenario,
+            "Scenario 2"
+        );
+
+        scenarios.appendChild(scenarioTwo);
+    }
 }
 
 
 function formatScenario(call, label) {
+
     const args = call.arguments || {};
+
     let result = call.result || {};
 
     /*
-     * If the API response does not expose the calculated result,
-     * reconstruct the scenario deterministically from its arguments.
+     * Some API responses may contain the scenario arguments
+     * but an empty result object. In that case we reproduce
+     * the deterministic scenario calculation in the portal
+     * so the strategic scenario remains visible.
      */
+
     if (!result || Object.keys(result).length === 0) {
+
         const availableRooms = 420;
 
         const occupancyRate =
@@ -202,131 +217,192 @@ function formatScenario(call, label) {
         };
     }
 
-    const lines = [];
+    const card = document.createElement("div");
 
-    lines.push(label);
-    lines.push("");
+    card.className = "scenario-card";
 
-    if (result.occupancy_rate !== undefined) {
-        lines.push(
-            `Occupancy: ${(Number(result.occupancy_rate) * 100).toFixed(1)}%`
-        );
-    }
+    const title = document.createElement("h3");
 
-    if (result.adr !== undefined) {
-        lines.push(
-            `ADR: AED ${Number(result.adr).toLocaleString(
-                "en-US",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            )}`
-        );
-    }
+    title.textContent = label;
 
-    if (result.occupied_rooms !== undefined) {
-        lines.push(
-            `Occupied room-nights: ${Number(
-                result.occupied_rooms
-            ).toFixed(1)}`
-        );
-    }
+    card.appendChild(title);
 
-    if (result.room_revenue !== undefined) {
-        lines.push(
-            `Room revenue: AED ${Number(
-                result.room_revenue
-            ).toLocaleString(
-                "en-US",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            )}`
-        );
-    }
 
-    if (result.ota_share !== undefined) {
-        lines.push(
-            `OTA Share: ${(Number(result.ota_share) * 100).toFixed(1)}%`
-        );
-    }
+    addScenarioMetric(
+        card,
+        "Occupancy",
+        formatPercent(result.occupancy_rate)
+    );
 
-    if (result.ota_commission_rate !== undefined) {
-        lines.push(
-            `OTA Commission Rate: ${(Number(
-                result.ota_commission_rate
-            ) * 100).toFixed(1)}%`
-        );
-    }
+    addScenarioMetric(
+        card,
+        "ADR",
+        formatCurrency(result.adr)
+    );
 
-    if (result.ota_commission !== undefined) {
-        lines.push(
-            `OTA Commission: AED ${Number(
-                result.ota_commission
-            ).toLocaleString(
-                "en-US",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            )}`
-        );
-    }
+    addScenarioMetric(
+        card,
+        "Occupied room-nights",
+        formatNumber(result.occupied_rooms)
+    );
 
-    if (result.net_room_revenue !== undefined) {
-        lines.push(
-            `Net Room Revenue: AED ${Number(
-                result.net_room_revenue
-            ).toLocaleString(
-                "en-US",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            )}`
-        );
-    }
+    addScenarioMetric(
+        card,
+        "Room revenue",
+        formatCurrency(result.room_revenue)
+    );
 
-    return lines.join("\n");
+    addScenarioMetric(
+        card,
+        "OTA Share",
+        formatPercent(result.ota_share)
+    );
+
+    addScenarioMetric(
+        card,
+        "OTA Commission Rate",
+        formatPercent(result.ota_commission_rate)
+    );
+
+    addScenarioMetric(
+        card,
+        "OTA Commission",
+        formatCurrency(result.ota_commission)
+    );
+
+    addScenarioMetric(
+        card,
+        "Net Room Revenue",
+        formatCurrency(result.net_room_revenue)
+    );
+
+    return card;
+}
+
+
+function addScenarioMetric(card, label, value) {
+
+    const row = document.createElement("div");
+
+    row.className = "scenario-metric";
+
+    const metricLabel =
+        document.createElement("span");
+
+    metricLabel.className = "metric-label";
+
+    metricLabel.textContent = label;
+
+
+    const metricValue =
+        document.createElement("span");
+
+    metricValue.className = "metric-value";
+
+    metricValue.textContent = value;
+
+
+    row.appendChild(metricLabel);
+    row.appendChild(metricValue);
+
+    card.appendChild(row);
+}
+
+
+function formatPercent(value) {
+
+    const number = Number(value || 0);
+
+    return (number * 100).toFixed(1) + "%";
+}
+
+
+function formatCurrency(value) {
+
+    const number = Number(value || 0);
+
+    return "AED " +
+        number.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+}
+
+
+function formatNumber(value) {
+
+    const number = Number(value || 0);
+
+    return number.toLocaleString("en-US", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    });
 }
 
 
 function resetPanels() {
-    investigationPanel.classList.add("hidden");
-    analysisPanel.classList.add("hidden");
-    scenarioPanel.classList.add("hidden");
-    recommendationPanel.classList.add("hidden");
+
+    result.classList.add("hidden");
     decisionPanel.classList.add("hidden");
 
-    decisionResult.textContent = "";
+    answer.textContent = "";
 
     iteration.textContent = "-";
-    toolCalls.textContent = "-";
-    observations.textContent = "-";
-    decisionLoop.textContent = "-";
+    toolCalls.textContent = "0";
+    observations.textContent = "0";
+    decisionLoop.textContent = "0";
 
-    analysisContent.textContent = "";
-    scenarioOne.textContent = "";
-    scenarioTwo.textContent = "";
-    recommendationContent.textContent = "";
+    businessAnalysis.textContent = "";
+    scenarios.innerHTML = "";
+    recommendation.textContent = "";
+
+    decisionResult.textContent = "";
+    decisionResult.classList.add("hidden");
 }
 
 
+function showError(message) {
+
+    errorBox.textContent = message;
+
+    errorBox.classList.remove("hidden");
+}
+
+
+function hideError() {
+
+    errorBox.classList.add("hidden");
+
+    errorBox.textContent = "";
+}
+
+
+/* =========================================================
+   HUMAN DECISION
+   ========================================================= */
+
 approveButton.addEventListener("click", function () {
+
     decisionResult.textContent =
         "APPROVED: Human decision recorded. Prepare implementation plan.";
+
+    decisionResult.classList.remove("hidden");
 });
 
 
 rejectButton.addEventListener("click", function () {
+
     decisionResult.textContent =
         "REJECTED: Human decision recorded. Do not proceed with implementation.";
+
+    decisionResult.classList.remove("hidden");
 });
 
 
 analysisButton.addEventListener("click", function () {
+
     decisionResult.textContent =
         "REQUEST FURTHER ANALYSIS: Human decision recorded. Additional evidence is required.";
+
+    decisionResult.classList.remove("hidden");
 });
